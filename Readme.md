@@ -38,3 +38,6 @@ cp ./arbreABR.dot /mnt/c/Users/David/Downloads/
 ```powershell
 dot -Tpng "C:\Users\David\Downloads\arbreABR.dot" -o "C:\Users\David\Downloads\arbreABR.png"
 ```
+## Lien temporaire rapport GDoc  
+
+https://docs.google.com/document/d/1Pwz9IPIsNBY-8u0gIAGGEfuqpr2OZLDmix0Tm8wHAWQ/edit?usp=sharing  
