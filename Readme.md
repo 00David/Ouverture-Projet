@@ -4,6 +4,12 @@
 **Abdullah AL MAMUN**  
 **Yahya MUDALLAL**  
 
+## Setup à faire
+
+```bash
+mkdir executables
+```
+
 ## Architecture du projet
 
 Fichier **Arbre.ml** : La structure de l'arbre utilisé par les algos y est définie + des fonctions utilitaires sur celle-ci ou ses noeuds.  
