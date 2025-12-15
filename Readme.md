@@ -4,9 +4,13 @@
 **Abdullah AL MAMUN**  
 **Yahya MUDALLAL**  
 
-## Exécutables
+## Architecture du projet
 
-Les scripts exécutables sont générés dans le sous-répertoire '*executables*'.  
+Fichier **Arbre.ml** : La structure de l'arbre utilisé par les algos y est définie + des fonctions utilitaires sur celle-ci ou ses noeuds.  
+Fichier **EcritureDot.ml** : Les fonctions permettant d'écrire notre structure d'arbre dans le format .dot.  
+Fichier **Remy.ml** : L'algo de Rémy servant à générer un arbre.  
+Fichier **ABR.ml** : L'algo servant à générer un arbre de type ABR.  
+Sous-répertoire **executables** : Les scripts exécutables de nos 2 algos y sont générés.  
 
 ## Exécution algorithme de Rémy
 
