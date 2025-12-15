@@ -1,7 +1,8 @@
 (* Arbre.ml : Nos structures *)
 
 
-(** Type représentant un noeud d'un arbre binaire. Un noeud a forcément une étiquette entière unique, et seule la racine n'a pas de parent (parent = None).
+(** Type représentant un noeud d'un arbre binaire. Un noeud a forcément une étiquette entière unique (id), et seule la racine n'a pas de parent (parent = None).
+    La première étiquette (id) commence à 1. Si un noeud est un Empty avec une étiquette à 0, c'est un noeud temporaire.
     - [Empty] : une feuille identifiée par un entier [id].
         @param id L'étiquette unique.
         @param p Le parent du noeud.
@@ -30,7 +31,7 @@ type noeud =
     @param feuilles Le tableau préalloué contenant les feuilles de l'arbre.
     @param t_noeuds Le nombre de cases actuellement utilisées pour le tableau [noeuds] (= nb de nos noeuds).
     @param t_feuilles Le nombre de cases actuellement utilisées pour le tableau [feuilles] (= nb de nos feuilles).
-    Remarque : la taille de l'arbre n, en termes de noeuds internes, est donnée par n = (t_noeuds-t_feuilles).
+    Remarque : la taille de l'arbre n, en termes de noeuds internes, est donnée par n = ([t_noeuds]-[t_feuilles]).
 *)
 type arbre = {
     mutable racine : noeud;
@@ -85,20 +86,21 @@ let remplacerEnfant (parent : noeud) (ancienEnfant : noeud) (nouvelEnfant : noeu
 
 
 (** Création d'un arbre de taille 0 (0 noeud interne et 1 feuille). 
-    La feuille est initialisée avec une étiquette de valeur 1.
+    La feuille (ici du coup la racine) est initialisée avec une étiquette de valeur 1.
+    Les tableaux contenant les noeuds et les feuilles de l'arbre sont initialisés, avec donc la racine dedans.
     @param tailleMaxNoeuds Le nombre de noeuds (internes + feuilles) maximal dans l'arbre.
     @param tailleMaxFeuilles Le nombre de feuilles maximal dans l'arbre.
     @return Un arbre vide.
 *)
 let arbre_vide (tailleMaxNoeuds : int) (tailleMaxFeuilles : int) : arbre =
     let r = Empty { id = 1; p = None } in
-    (* Initialisation des tableaux avec des Empty “temporaires” *)
+    (* Initialisation des tableaux des noeuds et des feuilles avec des Empty “temporaires”, d'id 0 : *)
     let noeuds = Array.make tailleMaxNoeuds (Empty { id = 0; p = None }) in
     let feuilles = Array.make tailleMaxFeuilles (Empty { id = 0; p = None }) in
-    (* Mise de la racine dans les tableaux *)
+    (* Mise de la racine dans les tableaux (à l'indice 0) : *)
     noeuds.(0) <- r;
     feuilles.(0) <- r;
-    (* Construction de l'arbre réduit à la racine *)
+    (* Construction de l'arbre réduit à la racine : *)
     {
         racine = r;
         noeuds = noeuds;
@@ -151,39 +153,3 @@ let afficher (a : arbre) =
         ) a.feuilles;
     Printf.printf "\n";
     Printf.printf "n = %d\n" (a.t_noeuds-a.t_feuilles)
-
-
-(** Ecrit un arbre au fomat .dot.
-    @param a L'arbre concerné.
-    @param fichier Le fichier de sortie.
-*)
-let ecritureArbreDot (a : arbre) (fichier : string) =
-    let oc = open_out fichier in
-    Printf.fprintf oc "graph Arbre {\n";
-    Printf.fprintf oc "  node [fontname=\"Arial\"];\n";
-    
-    let rec aux n =
-        match n with
-        | Empty e ->
-            (* Feuille : box *)
-            Printf.fprintf oc "  n%d [label=%d, shape=box];\n" e.id e.id;
-        | Noeud n ->
-            (* Noeud interne : cercle *)
-            Printf.fprintf oc "  n%d [label=%d, shape=circle];\n" n.id n.id;
-            (* Arête vers enfant gauche *)
-            Printf.fprintf oc "  n%d -- n%d [penwidth=20];\n" n.id 
-            (match n.g with 
-                | Empty eg -> eg.id
-                | Noeud ng -> ng.id);
-            aux n.g;
-            (* Arête vers enfant droit *)
-            Printf.fprintf oc "  n%d -- n%d [penwidth=20];\n" n.id 
-            (match n.d with 
-                | Empty ed -> ed.id
-                | Noeud nd -> nd.id);
-            aux n.d
-    in
-    aux a.racine;
-    Printf.fprintf oc "}\n";
-    close_out oc;
-    Printf.printf "Fichier .dot de l'arbre généré dans %s\n" fichier

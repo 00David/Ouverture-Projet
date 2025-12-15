@@ -4,18 +4,22 @@
 **Abdullah AL MAMUN**  
 **Yahya MUDALLAL**  
 
+## Exécutables
+
+Les scripts exécutables sont générés dans le sous-répertoire '*executables*'.  
+
 ## Execution algorithme de Rémy
 
 Depuis le répertoire racine du projet.  
 
 **Compilation :**  
 ```bash
-ocamlc -o Remy Arbre.ml Remy.ml
+ocamlc -o executables/Remy Arbre.ml EcritureDot.ml Remy.ml
 ```
 
 **Execution, avec 'n' la taille de l'arbre à créer :**  
 ```bash
-./Remy n
+executables/Remy n
 ```
 
 ## Lecture .dot

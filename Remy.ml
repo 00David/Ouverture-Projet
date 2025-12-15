@@ -5,30 +5,32 @@ Random.self_init ();;
 (** Ajoute 2 noeuds dans l'arborescente : 1 interne et 1 feuille, après avoir accédé à un noeud particulier de l'arbre.
     On modifie également les tableaux des noeuds et des feuilles de l'arbre pour réfléter ces ajouts. 
     Suppose que les tailles des tableaux aient été allouées au préalable pour permettre les ajouts.
-    @param noeudCible Le noeud cible où ajouter un nouveau noeud interne, avec une nouvelle feuille.
+    @param noeudCible Le noeud cible où ajouter un nouveau noeud interne, avec une nouvelle feuille. (noeudCible : racine de F par rapport à l'énoncé)
     @param a L'arbre dans lequel on ajoute le nouveau noeud.
     @return Le nouveau noeud interne.
 *)
 let ajouteNoeudRemy (noeudCible : Arbre.noeud) (a : Arbre.arbre) : Arbre.noeud =
     let l = a.t_noeuds in
 
+    (* l+1 : id du nouveau noeud interne, l+2 : id du nouveau noeud feuille *)
+
     (* Création de la nouvelle feuille *)
     let nouvelleFeuille = Arbre.Empty { id = l+2; p = None } in
 
     (* Création du nouveau noeud interne *)
     let nouveauInterne =
-        if Random.bool () then
+        if Random.bool () then (* Pile : F devient enfant gauche du nouvel interne *)
             Arbre.Noeud { 
-                id = l+1; (*Etiquette du premier Empty de l'arbre commence à 1 => décalage de 1 par rapport à l *)
+                id = l+1;
                 g = noeudCible; 
                 d = nouvelleFeuille; 
                 p = match noeudCible with 
                     |Empty e -> e.p
                     |Noeud n -> n.p;
             }
-        else
+        else (* Face : F devient enfant droit du nouvel interne *)
             Arbre.Noeud { 
-                id = l+1; (*Etiquette du premier Empty de l'arbre commence à 1 => décalage de 1 par rapport à l *)
+                id = l+1;
                 g = nouvelleFeuille; 
                 d = noeudCible; 
                 p = match noeudCible with 
@@ -53,6 +55,7 @@ let ajouteNoeudRemy (noeudCible : Arbre.noeud) (a : Arbre.arbre) : Arbre.noeud =
         Arbre.mettre_parent nouvelleFeuille nouveauInterne;
 
         (* Mise à jour des tableaux et de leurs nb de cases utilisées *)
+        (* On ajoute notamment les 2 nouveaux noeuds dans les tableaux *)
         a.noeuds.(l) <- nouveauInterne;
         a.noeuds.(l+1) <- nouvelleFeuille;
         a.feuilles.(a.t_feuilles) <- nouvelleFeuille;
@@ -78,12 +81,12 @@ let rec creeArbreRemy (n : int) (nInitial : int) : Arbre.arbre =
         
         let a = creeArbreRemy (n-1) nInitial in (* On récupère récursivement l'arbre nécessaire *)
         let i = Random.int a.t_noeuds in
-        let cible = a.noeuds.(i) in
+        let cible = a.noeuds.(i) in (* On choisit de manière uniforme l'un des noeuds de l'arbre *)
         let nouveauInterne = ajouteNoeudRemy cible a in (* On ajoute les nouveaux noeuds en place dans l'arbre *)
         (* Mise à jour de la racine si nécessaire *)
         if Arbre.egaliteNoeuds a.racine cible then
         a.racine <- nouveauInterne;
-        a
+        a (* On renvoit l'arbre mis à jour *)
 
 
 (** Applique l'algorithme de Rémy, en appelant creeArbreRemy avec n pour les 2 paramètres.
@@ -94,11 +97,12 @@ let algoRemy (n : int) : Arbre.arbre = creeArbreRemy n n
 
 
 (* Point d'entrée pour l'algo de Rémy *)
+(* Chaque lancement de l'algo écrit le nouvel arbre dans un .dot *)
 let () =
     if Array.length Sys.argv < 2 then
         Printf.printf "Usage: %s <taille_arbre>\n" Sys.argv.(0)
     else
         let n = int_of_string Sys.argv.(1) in 
         let a_resultat = algoRemy n in
-        Arbre.afficher a_resultat;
-        Arbre.ecritureArbreDot a_resultat "arbreRemy.dot"
+        (* Arbre.afficher a_resultat; *) (* DEBUG *)
+        EcritureDot.ecritureArbreDot a_resultat "arbreRemy.dot"
