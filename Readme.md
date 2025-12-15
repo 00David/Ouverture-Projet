@@ -8,7 +8,7 @@
 
 Les scripts exécutables sont générés dans le sous-répertoire '*executables*'.  
 
-## Execution algorithme de Rémy
+## Exécution algorithme de Rémy
 
 Depuis le répertoire racine du projet.  
 
@@ -17,9 +17,23 @@ Depuis le répertoire racine du projet.
 ocamlc -o executables/Remy Arbre.ml EcritureDot.ml Remy.ml
 ```
 
-**Execution, avec 'n' la taille de l'arbre à créer :**  
+**Exécution, avec 'n' la taille de l'arbre à créer :**  
 ```bash
 executables/Remy n
+```
+
+## Exécution algorithme ABR
+
+Depuis le répertoire racine du projet.  
+
+**Compilation :**  
+```bash
+ocamlc -o executables/ABR Arbre.ml EcritureDot.ml ABR.ml
+```
+
+**Exécution, avec 'n' la taille de l'arbre à créer :**  
+```bash
+executables/ABR n
 ```
 
 ## Lecture .dot

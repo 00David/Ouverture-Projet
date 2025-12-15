@@ -2,7 +2,7 @@
 Random.self_init ();;
 
 
-(** Ajoute 2 noeuds dans l'arborescente : 1 interne et 1 feuille, après avoir accédé à un noeud particulier de l'arbre.
+(** Ajoute 2 noeuds dans l'arborescence : 1 interne et 1 feuille, après avoir accédé à un noeud particulier de l'arbre.
     On modifie également les tableaux des noeuds et des feuilles de l'arbre pour réfléter ces ajouts. 
     Suppose que les tailles des tableaux aient été allouées au préalable pour permettre les ajouts.
     @param noeudCible Le noeud cible où ajouter un nouveau noeud interne, avec une nouvelle feuille. (noeudCible : racine de F par rapport à l'énoncé)

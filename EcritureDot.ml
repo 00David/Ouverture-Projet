@@ -1,8 +1,9 @@
 (* EcritureDot.ml : Fonctions permettant d'écrire nos arbres créés par nos algos au format .dot *)
 
-(** Ecrit un arbre au fomat .dot de manière minimale
+
+(** Ecrit un arbre au fomat .dot de manière minimale.
     @param a L'arbre concerné.
-    @param fichier Le fichier de sortie.
+    @param fichier Le chemin du fichier de sortie.
 *)
 let ecritureArbreDot (a : Arbre.arbre) (fichier : string) =
     let oc = open_out fichier in
@@ -36,9 +37,9 @@ let ecritureArbreDot (a : Arbre.arbre) (fichier : string) =
     Printf.printf "Fichier .dot de l'arbre généré dans %s\n" fichier
 
 
-(** Ecrit un arbre au fomat .dot, avec des grosses arêtes et des noeuds portant les ids. Pour Debug.
+(** Ecrit un arbre au fomat .dot, avec des grosses arêtes et des noeuds portant les ids pour debug.
     @param a L'arbre concerné.
-    @param fichier Le fichier de sortie.
+    @param fichier Le chemin du fichier de sortie.
 *)
 let ecritureArbreDotDebug (a : Arbre.arbre) (fichier : string) =
     let oc = open_out fichier in
