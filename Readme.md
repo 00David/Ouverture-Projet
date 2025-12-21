@@ -13,10 +13,13 @@ mkdir executables
 ## Architecture du projet
 
 Fichier **Arbre.ml** : La structure de l'arbre utilisé par les algos y est définie + des fonctions utilitaires sur celle-ci ou ses noeuds.  
-Fichier **EcritureDot.ml** : Les fonctions permettant d'écrire notre structure d'arbre dans le format .dot.  
 Fichier **Remy.ml** : L'algo de Rémy servant à générer un arbre.  
+Fichier **Remy_main.ml** : Point d'entrée de l'algo de Rémy.  
 Fichier **ABR.ml** : L'algo servant à générer un arbre de type ABR.  
-Sous-répertoire **executables** : Les scripts exécutables de nos 2 algos y sont générés.  
+Fichier **ABR_main.ml** : Point d'entrée de l'algo de l'arbre de type ABR.  
+Fichier **EcritureDot.ml** : Les fonctions permettant d'écrire notre structure d'arbre dans le format .dot.  
+Fichier **experimentation.ml** : Contient les fonctions utilisées pour récolter les datas sur les arbres, et permet de tout récolter et mettre dans un .csv.  
+Sous-répertoire **executables** : Les scripts exécutables de nos 2 algos y sont générés, en plus du script pour récupérer les datas de la partie expérimentation.  
 
 ## Exécution algorithme de Rémy
 
@@ -24,7 +27,7 @@ Depuis le répertoire racine du projet.
 
 **Compilation :**  
 ```bash
-ocamlc -o executables/Remy Arbre.ml EcritureDot.ml Remy.ml
+ocamlc -o executables/Remy Arbre.ml EcritureDot.ml Remy.ml Remy_main.ml
 ```
 
 **Exécution, avec 'n' la taille de l'arbre à créer :**  
@@ -38,12 +41,26 @@ Depuis le répertoire racine du projet.
 
 **Compilation :**  
 ```bash
-ocamlc -o executables/ABR Arbre.ml EcritureDot.ml ABR.ml
+ocamlc -o executables/ABR Arbre.ml EcritureDot.ml ABR.ml ABR_main.ml
 ```
 
 **Exécution, avec 'n' la taille de l'arbre à créer :**  
 ```bash
 executables/ABR n
+```
+
+## Exécution experimentation (récolte des datas, prend un peu de temps)
+
+Depuis le répertoire racine du projet.  
+
+**Compilation :**  
+```bash
+ocamlc -o executables/experimentation Arbre.ml EcritureDot.ml Remy.ml ABR.ml experimentation.ml
+```
+
+**Exécution**, avec 'fichier_res.csv' le fichier de sortie dans lequel mettre les datas, et 'nb_arbres' le nombre d'arbres différents à créer pour chaque taille d'arbre :  
+```bash
+executables/experimentation fichier_res.csv nb_arbres
 ```
 
 ## Lecture .dot

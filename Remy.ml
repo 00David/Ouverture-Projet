@@ -97,15 +97,3 @@ let rec creeArbreRemy (n : int) (nInitial : int) : Arbre.arbre * int * int =
 let algoRemy (n : int) : Arbre.arbre = 
     let arbreFinal, nb_noeuds, nb_feuilles = creeArbreRemy n n
     in arbreFinal
-
-
-(* Point d'entrée pour l'algo de Rémy *)
-(* Chaque lancement de l'algo écrit le nouvel arbre dans un .dot *)
-let () =
-    if Array.length Sys.argv < 2 then
-        Printf.printf "Usage: %s <taille_arbre>\n" Sys.argv.(0)
-    else
-        let n = int_of_string Sys.argv.(1) in 
-        let a_resultat = algoRemy n in
-        (* Arbre.afficher a_resultat; *) (* DEBUG *)
-        EcritureDot.ecritureArbreDot a_resultat "arbreRemy.dot"

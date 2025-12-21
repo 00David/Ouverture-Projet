@@ -78,14 +78,20 @@ let profondeur_moyenne (a : Arbre.arbre) : float =
 
 let () =
 
+  if Array.length Sys.argv < 3 then
+    Printf.printf "Usage: %s <fichier_res.csv> <nb_arbres>\n" Sys.argv.(0)
+  else
+
+	Printf.printf "Calcul des datas ...\n%!";
+
 	(* ouverture du fichier csv *)
-	let oc  = open_out "experimentation.csv" in
+	let oc  = open_out Sys.argv.(1) in
 
 	(* écriture de l'entête du csv *)
 	Printf.fprintf oc "taille,temps_ABR,temps_Remy,largeur_ABR,largeur_Remy,hauteur_ABR,hauteur_Remy,taille_ssarbre_g_ABR,taille_ssarbre_g_Remy,prof_moy_ABR,prof_moy_Remy\n";
 
-	(* pour chaque taille on calcul les données moyennes sur 100 arbres aléatoires *)
-	for i = 1 to 100 do
+	(* pour chaque taille on calcule les données moyennes sur 'nb_arbres' arbres aléatoires, donné en paramètre à l'exécutable *)
+	for i = 1 to (int_of_string Sys.argv.(2)) do
 		let taille = i * 1000 in
 		
 		let liste_temps_ABR = ref [] in
