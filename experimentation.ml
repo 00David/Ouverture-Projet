@@ -78,130 +78,120 @@ let profondeur_moyenne (a : Arbre.arbre) : float =
 
 let () =
 
-  if Array.length Sys.argv < 3 then
-    Printf.printf "Usage: %s <fichier_res.csv> <nb_arbres>\n" Sys.argv.(0)
-  else
-
+	if Array.length Sys.argv < 3 then
+		Printf.printf "Usage: %s <fichier_res.csv> <nb_arbres>\n" Sys.argv.(0)
+	else
+		
 	Printf.printf "Calcul des datas ...\n%!";
 
 	(* ouverture du fichier csv *)
 	let oc  = open_out Sys.argv.(1) in
 
+	(* taille maximale des arbres *)
+	let max_arbres = int_of_string Sys.argv.(2) in 
+
 	(* écriture de l'entête du csv *)
 	Printf.fprintf oc "taille,temps_ABR,temps_Remy,largeur_ABR,largeur_Remy,hauteur_ABR,hauteur_Remy,taille_ssarbre_g_ABR,taille_ssarbre_g_Remy,prof_moy_ABR,prof_moy_Remy\n";
 
-	(* pour chaque taille on calcule les données moyennes sur 'nb_arbres' arbres aléatoires, donné en paramètre à l'exécutable *)
-	for i = 1 to (int_of_string Sys.argv.(2)) do
-		let taille = i * 1000 in
-		
-		let liste_temps_ABR = ref [] in
-		let liste_temps_Remy = ref [] in
+	let rec boucler_tailles i =
+		if i > max_arbres then ()
+		else begin 
+			let taille = i * 1000 in
 
-		let liste_hauteurs_ABR = ref [] in
-		let liste_hauteurs_Remy = ref [] in
+        	let rec boucler_simulations j acc_ABR acc_Remy =
+          		match j with
+				| 0 ->  (acc_ABR, acc_Remy)
+				| _ -> 
+					(* calcul des temps d'exécution *)
+					let debut_ABR = Sys.time () in
+					let arbre_ABR = ABR.algoABR taille in
+					let fin_ABR = Sys.time () in
+					
+					let debut_Remy = Sys.time() in  
+					let arbre_Remy = Remy.algoRemy taille in
+					let fin_Remy = Sys.time() in
+            
+					(* On déstructure les accumulateurs actuels *)
+					let (t_ABR, h_ABR, g_ABR, l_ABR, p_ABR) = acc_ABR in
+					let (t_Remy, h_Remy, g_Remy, l_Remy, p_Remy) = acc_Remy in
 
-		let liste_tailles_ssarbres_g_ABR = ref [] in
-		let liste_tailles_ssarbres_g_Remy = ref [] in
+		            (* Mise à jour des accumulateurs ABR *)
+					let new_acc_ABR = (
+					(fin_ABR -. debut_ABR) :: t_ABR,
+					(hauteur_arbre arbre_ABR) :: h_ABR,
+					(taille_sous_arbre_gauche arbre_ABR) :: g_ABR,
+					(largeur_arbre arbre_ABR) :: l_ABR,
+					(profondeur_moyenne arbre_ABR) :: p_ABR
+					) in
 
-		let liste_largeurs_ABR = ref [] in
-		let liste_largeurs_Remy = ref [] in
-	
-		let liste_prof_moy_ABR = ref [] in
-		let liste_prof_moy_Remy = ref [] in
-	
-		for j = 1 to 100 do
+					(* Mise à jour des accumulateurs Remy *)
+					let new_acc_Remy = (
+					(fin_Remy -. debut_Remy) :: t_Remy,
+					(hauteur_arbre arbre_Remy) :: h_Remy,
+					(taille_sous_arbre_gauche arbre_Remy) :: g_Remy,
+					(largeur_arbre arbre_Remy) :: l_Remy,
+					(profondeur_moyenne arbre_Remy) :: p_Remy
+					) in
 
-			(* calcul des temps d'exécution *)
-			let debut_ABR = Sys.time () in
-			let arbre_ABR = ABR.algoABR taille in
-			let fin_ABR = Sys.time () in
+					(* Appel récursif *)
+					boucler_simulations (j - 1) new_acc_ABR new_acc_Remy
+			in
 
-			let debut_Remy = Sys.time() in 	
-			let arbre_Remy = Remy.algoRemy taille in
-			let fin_Remy = Sys.time() in
+			(* Lancement des 100 simulations avec des listes vides au départ *)
+			let (res_ABR, res_Remy) = boucler_simulations 100 ([],[],[],[],[]) ([],[],[],[],[]) in
+			
+			(* Déstructuration des résultats finaux *)
+			let (list_t_ABR, list_h_ABR, list_g_ABR, list_l_ABR, list_p_ABR) = res_ABR in
+			let (list_t_Remy, list_h_Remy, list_g_Remy, list_l_Remy, list_p_Remy) = res_Remy in
 
-			(* insérer le temps dans la liste des temps *)
-			liste_temps_ABR := (fin_ABR -. debut_ABR) :: !liste_temps_ABR;
-			liste_temps_Remy := (fin_Remy -. debut_Remy) :: !liste_temps_Remy;
+			(* calcul des moyennes *)
+			let moy_temps_ABR = moyenne list_t_ABR in
+			let moy_temps_Remy = moyenne list_t_Remy in
 
-			(* calcul des hauteurs*)
-			let hauteur_ABR = hauteur_arbre arbre_ABR in
-			let hauteur_Remy = hauteur_arbre arbre_Remy in
+			let moy_hauteur_ABR = int_of_float (moyenne (List.map float_of_int list_h_ABR)) in
+			let moy_hauteur_Remy = int_of_float (moyenne (List.map float_of_int list_h_Remy)) in
 
-			(* insérer la hauteur dans la liste des hauteurs *)
-			liste_hauteurs_ABR := hauteur_ABR :: !liste_hauteurs_ABR;
-			liste_hauteurs_Remy := hauteur_Remy :: !liste_hauteurs_Remy;
+			let moy_taille_ssarbre_g_ABR = int_of_float (moyenne (List.map float_of_int list_g_ABR)) in
+			let moy_taille_ssarbre_g_Remy = int_of_float (moyenne (List.map float_of_int list_g_Remy)) in
 
-			(* calcul de la taille du sous arbre gauche *)
-			let taille_ssarbre_g_ABR = taille_sous_arbre_gauche arbre_ABR in
-			let taille_ssarbre_g_Remy = taille_sous_arbre_gauche arbre_Remy in
+			let moy_largeur_ABR = int_of_float (moyenne (List.map float_of_int list_l_ABR)) in
+			let moy_largeur_Remy = int_of_float (moyenne (List.map float_of_int list_l_Remy)) in
 
-			(* insérer la taille du sous arbre gauche dans la liste des tailles *)
-			liste_tailles_ssarbres_g_ABR := taille_ssarbre_g_ABR :: !liste_tailles_ssarbres_g_ABR;
-			liste_tailles_ssarbres_g_Remy := taille_ssarbre_g_Remy :: !liste_tailles_ssarbres_g_Remy;
+			let moy_prof_moy_ABR = moyenne list_p_ABR in
+			let moy_prof_moy_Remy = moyenne list_p_Remy in
 
-			(* calcul des largeurs *)
-			let largeur_ABR = largeur_arbre arbre_ABR in
-			let largeur_Remy = largeur_arbre arbre_Remy in
+			(* affichage console *)
+			Printf.printf "Pour taille = %d\n%!" taille;	
+			Printf.printf "temps ABR = %f\n%!" moy_temps_ABR; 
+			Printf.printf "temps Remy = %f\n%!" moy_temps_Remy;
+			Printf.printf "hauteur ABR = %d\n%!" moy_hauteur_ABR; 
+			Printf.printf "hauteur Remy = %d\n%!" moy_hauteur_Remy;
+			Printf.printf "largeur ABR = %d\n%!" moy_largeur_ABR;
+			Printf.printf "largeur Remy = %d\n%!" moy_largeur_Remy;
+			Printf.printf "taille sous arbre gauche ABR = %d\n%!" moy_taille_ssarbre_g_ABR; 
+			Printf.printf "taille sous arbre droit Remy = %d\n%!" moy_taille_ssarbre_g_Remy;
+			Printf.printf "Profondeur moyenne des feuilles ABR = %f\n%!" moy_prof_moy_ABR; 
+			Printf.printf "Profondeur moyenne des feuilles Remy = %f\n%!" moy_prof_moy_Remy; 
 
-			(* insérer la largeur dans la liste des largeurs *)
-			liste_largeurs_ABR := largeur_ABR :: !liste_largeurs_ABR;
-			liste_largeurs_Remy := largeur_Remy :: !liste_largeurs_Remy;
+			(* ecriture des données dans le csv *)
+			Printf.fprintf oc "%d,%f,%f,%d,%d,%d,%d,%d,%d,%f,%f\n" 
+				taille 
+				moy_temps_ABR 
+				moy_temps_Remy
+				moy_largeur_ABR
+				moy_largeur_Remy
+				moy_hauteur_ABR  
+				moy_hauteur_Remy  
+				moy_taille_ssarbre_g_ABR
+				moy_taille_ssarbre_g_Remy
+				moy_prof_moy_ABR
+				moy_prof_moy_Remy;
 
-			(* calcul des profondeurs moyennes des feuille *)
-			let prof_moy_ABR = profondeur_moyenne arbre_ABR in
-			let prof_moy_Remy = profondeur_moyenne arbre_Remy in
+			(* Appel récursif *)
+			boucler_tailles (i + 1)
+		end
+	in
 
-			(* insérer le profondeur moyenne dans la liste des profondeurs moyennes *)
-			liste_prof_moy_ABR := prof_moy_ABR :: !liste_prof_moy_ABR;
-			liste_prof_moy_Remy := prof_moy_Remy :: !liste_prof_moy_Remy;
-
-		done;
-
-		(* calcul des moyennes *)
-		let moy_temps_ABR = moyenne !liste_temps_ABR in
-		let moy_temps_Remy = moyenne !liste_temps_Remy in
-
-		let moy_hauteur_ABR = int_of_float (moyenne (List.map float_of_int !liste_hauteurs_ABR)) in
-		let moy_hauteur_Remy = int_of_float (moyenne (List.map float_of_int !liste_hauteurs_Remy)) in
-
-		let moy_taille_ssarbre_g_ABR = int_of_float (moyenne (List.map float_of_int !liste_tailles_ssarbres_g_ABR)) in
-		let moy_taille_ssarbre_g_Remy = int_of_float (moyenne (List.map float_of_int !liste_tailles_ssarbres_g_Remy)) in
-
-		let moy_largeur_ABR = int_of_float (moyenne (List.map float_of_int !liste_largeurs_ABR)) in
-		let moy_largeur_Remy = int_of_float (moyenne (List.map float_of_int !liste_largeurs_Remy)) in
-
-		let moy_prof_moy_ABR = moyenne !liste_prof_moy_ABR in
-		let moy_prof_moy_Remy = moyenne !liste_prof_moy_Remy in
-
-		(* affichage console *)
-		Printf.printf "Pour taille = %d\n" taille;	
-		Printf.printf "temps ABR = %f\n" moy_temps_ABR; 
-		Printf.printf "temps Remy = %f\n" moy_temps_Remy;
-		Printf.printf "hauteur ABR = %d\n" moy_hauteur_ABR; 
-		Printf.printf "hauteur Remy = %d\n" moy_hauteur_Remy;
-		Printf.printf "largeur ABR = %d\n" moy_largeur_ABR;
-		Printf.printf "largeur Remy = %d\n" moy_largeur_Remy;
-		Printf.printf "taille sous arbre gauche ABR = %d\n" moy_taille_ssarbre_g_ABR; 
-		Printf.printf "taille sous arbre droit Remy = %d\n" moy_taille_ssarbre_g_Remy;
-		Printf.printf "Profondeur moyenne des feuilles ABR = %f\n" moy_prof_moy_ABR; 
-		Printf.printf "Profondeur moyenne des feuilles Remy = %f\n" moy_prof_moy_Remy; 
-
-
-		(* ecriture des données dans le csv *)
-		Printf.fprintf oc "%d,%f,%f,%d,%d,%d,%d,%d,%d,%f,%f\n" 
-            taille 
-            moy_temps_ABR 
-            moy_temps_Remy
-            moy_largeur_ABR
-            moy_largeur_Remy
-            moy_hauteur_ABR  
-            moy_hauteur_Remy  
-            moy_taille_ssarbre_g_ABR
-            moy_taille_ssarbre_g_Remy
-			moy_prof_moy_ABR
-			moy_prof_moy_Remy;
-
-	done;
+	boucler_tailles 1;
 	
 	close_out oc;
