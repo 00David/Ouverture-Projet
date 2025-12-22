@@ -30,6 +30,8 @@ Fichier **experimentation.ml** : Contient les fonctions utilisées pour récolte
 
 Sous-répertoire **executables** : Les scripts exécutables de nos 2 algos y sont générés, en plus du script pour récupérer les datas de la partie expérimentation.  
 
+Sous-répertoire **graphiques** : Les graphiques générés et utilisés dans le rapport y sont.  
+
 ## Exécution algorithme de Rémy
 
 Depuis le répertoire racine du projet.  
