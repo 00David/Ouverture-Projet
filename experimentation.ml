@@ -79,7 +79,7 @@ let profondeur_moyenne (a : Arbre.arbre) : float =
 let () =
 
 	if Array.length Sys.argv < 3 then
-		Printf.printf "Usage: %s <fichier_res.csv> <nb_arbres>\n" Sys.argv.(0)
+		Printf.printf "Usage: %s <fichier_res.csv> <nb_tailles_arbres>\n" Sys.argv.(0)
 	else
 		
 	Printf.printf "Calcul des datas ...\n%!";
@@ -87,14 +87,14 @@ let () =
 	(* ouverture du fichier csv *)
 	let oc  = open_out Sys.argv.(1) in
 
-	(* taille maximale des arbres *)
-	let max_arbres = int_of_string Sys.argv.(2) in 
+	(* le nombre de taille différentes testées des arbres *)
+	let nb_tailles = int_of_string Sys.argv.(2) in 
 
 	(* écriture de l'entête du csv *)
 	Printf.fprintf oc "taille,temps_ABR,temps_Remy,largeur_ABR,largeur_Remy,hauteur_ABR,hauteur_Remy,taille_ssarbre_g_ABR,taille_ssarbre_g_Remy,prof_moy_ABR,prof_moy_Remy\n";
 
 	let rec boucler_tailles i =
-		if i > max_arbres then ()
+		if i > nb_tailles then ()
 		else begin 
 			let taille = i * 1000 in
 

@@ -58,9 +58,9 @@ Depuis le répertoire racine du projet.
 ocamlc -o executables/experimentation Arbre.ml EcritureDot.ml Remy.ml ABR.ml experimentation.ml
 ```
 
-**Exécution**, avec 'fichier_res.csv' le fichier de sortie dans lequel mettre les datas, et 'nb_arbres' le nombre d'arbres différents à créer pour chaque taille d'arbre :  
+**Exécution**, avec 'fichier_res.csv' le fichier de sortie dans lequel mettre les datas, et 'nb_tailles_arbres' le nombre de tailles différentes testées pour les arbres  :  
 ```bash
-executables/experimentation fichier_res.csv nb_arbres
+executables/experimentation fichier_res.csv nb_tailles_arbres
 ```
 
 ## Lecture .dot
