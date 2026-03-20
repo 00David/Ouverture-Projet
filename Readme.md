@@ -1,8 +1,8 @@
 # Projet Ouverture : génération d'arbres binaires aléatoires
 
-**David VADIMON 21207099**  
-**Abdullah AL MAMUN 21124650**  
-**Yahya MUDALLAL 21238547**  
+**David VADIMON**  
+**Abdullah AL MAMUN**  
+**Yahya MUDALLAL**  
 
 ## Rapport
 
